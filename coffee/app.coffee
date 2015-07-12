@@ -27,7 +27,7 @@
     # 3. add your codes below...
     # add a label shows "Hello World"
     # create and initialize a label
-    helloLabel = new (cc.LabelTTF)('Coffee NPM Grunt', 'Arial', 38)
+    helloLabel = new (cc.LabelTTF)('Coffee NPM Gruntfile.coffee', 'Arial', 38)
     # position the label on the center of the screen
     helloLabel.x = size.width / 2
     helloLabel.y = 0
