@@ -27,7 +27,7 @@
     # 3. add your codes below...
     # add a label shows "Hello World"
     # create and initialize a label
-    helloLabel = new (cc.LabelTTF)('Coffee NPM Gruntfile.coffee', 'Arial', 38)
+    helloLabel = new (cc.LabelTTF)('Coffee NPM Gruntfile.coffee without classes!', 'Arial', 38)
     # position the label on the center of the screen
     helloLabel.x = size.width / 2
     helloLabel.y = 0
@@ -48,7 +48,7 @@
 
 @HelloWorldScene = cc.Scene.extend(onEnter: ->
   @_super()
-  layer = new HelloWorldLayer
+  layer = new LandingLayer
   @addChild layer
   return
 )
