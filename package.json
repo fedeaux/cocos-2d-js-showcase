@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/fedeaux/cocos-2d-js-showcase/issues"
   },
-  "homepage": "https://github.com/fedeaux/cocos-2d-js-showcase#readme"
+  "homepage": "https://github.com/fedeaux/cocos-2d-js-showcase#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1"
+  }
 }

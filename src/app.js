@@ -19,7 +19,7 @@
       menu.x = 0;
       menu.y = 0;
       this.addChild(menu, 1);
-      helloLabel = new cc.LabelTTF('Hello Coffee NPM World', 'Arial', 38);
+      helloLabel = new cc.LabelTTF('Coffee NPM Grunt', 'Arial', 38);
       helloLabel.x = size.width / 2;
       helloLabel.y = 0;
       this.addChild(helloLabel, 5);
