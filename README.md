@@ -17,4 +17,4 @@ frameworks/js-bindings/cocos2d-x/cocos/platform/android/java/src/org/cocos2dx/li
 
 line 363
         -        isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_");
-        -        isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_") || Build.FINGERPRINT.startsWith("generic");
+        +        isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_") || Build.FINGERPRINT.startsWith("generic");
