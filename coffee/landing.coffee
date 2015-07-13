@@ -1,18 +1,22 @@
-@LandingLayer = cc.Layer.extend(
-  ctor: ->
-    @_super()
-    size = cc.winSize
-    # @addChild new LandingMenu
+class @LandingLayer extends Layer
+  constructor: ->
+    super
 
-    @label = new cc.LabelTTF('No pretty way to class', 'Arial', 44)
+    size = cc.winSize
+
+    @label = new cc.LabelTTF('This d be awesome :3', 'Arial', 44)
+    @label2 = new cc.LabelTTF('Can I have it? ^^', 'Arial', 44)
 
     @label.x = size.width / 2
     @label.y = size.height / 2
 
+    @label2.x = size.width / 2
+    @label2.y = size.height / 2 - 50
+
     @addChild @label
+    @addChild @label2
 
     true
-)
 
 class @Landing extends cc.Scene
   onEnter: ->
