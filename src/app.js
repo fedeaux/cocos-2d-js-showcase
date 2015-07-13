@@ -1,7 +1,6 @@
 (function() {
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    hasProp = {}.hasOwnProperty;
 
   this.Layer = (function(superClass) {
     extend(Layer, superClass);
@@ -25,18 +24,34 @@
 
   })(cc.Scene);
 
+  this.ListView = (function(superClass) {
+    extend(ListView, superClass);
+
+    function ListView() {
+      this.ctor();
+    }
+
+    return ListView;
+
+  })(ccui.ListView);
+
   this.LandingLayer = (function(superClass) {
     extend(LandingLayer, superClass);
 
     function LandingLayer() {
-      var size;
+      var button;
       LandingLayer.__super__.constructor.apply(this, arguments);
-      size = cc.winSize;
-      this.label = new cc.LabelTTF('I did it.', 'Arial', 44);
-      this.label.x = size.width / 2;
-      this.label.y = size.height / 2 + 50;
-      this.addChild(this.label);
-      true;
+      this.size = cc.winSize;
+      this.menu = new LandingMenu;
+      button = new ccui.Button;
+      button.setTouchEnabled(true);
+      button.loadTextures(res.CloseNormal_png, res.CloseSelected_png, '');
+      button.setTitleText('Alface');
+      button.setTitleFontSize(24);
+      button.setAnchorPoint(cc.p(1, 0.5));
+      button.setPosition(cc.p(this.size.width / 2, this.size.height / 2));
+      this.addChild(button);
+      this.addChild(this.menu);
     }
 
     return LandingLayer;
@@ -65,49 +80,36 @@
     extend(LandingMenu, superClass);
 
     function LandingMenu() {
-      this.ctor = bind(this.ctor, this);
-      return LandingMenu.__super__.constructor.apply(this, arguments);
-    }
-
-    LandingMenu.prototype.ctor = function() {
-      var button, size;
-      LandingMenu.__super__.ctor.call(this);
-      size = cc.winSize;
-      this.setDirection(ccui.ScrollView.DIR_VERTICAL);
+      var i, item, len, ref;
+      LandingMenu.__super__.constructor.apply(this, arguments);
+      this.size = cc.winSize;
       this.setTouchEnabled(true);
       this.setBounceEnabled(true);
-      this.setBackGroundImage(res.HelloWorld_png);
-      this.setContentSize(cc.size(size.width, size.height));
+      this.setBackGroundColor(cc.color(200, 200, 200, 0), cc.color(180, 180, 180, 0));
+      this.setContentSize(cc.size(this.size.width, this.size.height));
       this.setAnchorPoint(cc.p(0.5, 0.5));
-      this.setPosition(cc.p(size.width / 2, size.height / 2));
+      this.setPosition(cc.p(this.size.width / 2, this.size.height / 2));
+      ref = ['Animations', 'UI', 'Scene Transitions', 'Network'];
+      for (i = 0, len = ref.length; i < len; i++) {
+        item = ref[i];
+        this.addItem(item);
+      }
+    }
+
+    LandingMenu.prototype.addItem = function(text, callback) {
+      var button;
       button = new ccui.Button;
       button.setTouchEnabled(true);
       button.loadTextures(res.CloseNormal_png, res.CloseSelected_png, '');
-      button.setTitleText("Alface");
+      button.setTitleText(text);
       button.setTitleFontSize(24);
       button.setAnchorPoint(cc.p(1, 0.5));
-      button.setPosition(cc.p(50, size.height / 2));
-      this.pushBackCustomItem(button);
-      button = new ccui.Button;
-      button.setTouchEnabled(true);
-      button.loadTextures(res.CloseNormal_png, res.CloseSelected_png, '');
-      button.setTitleText("Alface");
-      button.setTitleFontSize(24);
-      button.setAnchorPoint(cc.p(1, 0.5));
-      button.setPosition(cc.p(50, size.height / 2));
-      this.pushBackCustomItem(button);
-      button = new ccui.Button;
-      button.setTouchEnabled(true);
-      button.loadTextures(res.CloseNormal_png, res.CloseSelected_png, '');
-      button.setTitleText("Alface");
-      button.setTitleFontSize(24);
-      button.setAnchorPoint(cc.p(1, 0.5));
-      button.setPosition(cc.p(50, size.height / 2));
+      button.setPosition(cc.p(this.size.width / 2, this.size.height / 2));
       return this.pushBackCustomItem(button);
     };
 
     return LandingMenu;
 
-  })(ccui.ListView);
+  })(ListView);
 
 }).call(this);

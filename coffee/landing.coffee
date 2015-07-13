@@ -1,17 +1,19 @@
 class @LandingLayer extends Layer
   constructor: ->
     super
+    @size = cc.winSize
+    @menu = new LandingMenu
 
-    size = cc.winSize
+    button = new ccui.Button
+    button.setTouchEnabled true
+    button.loadTextures res.CloseNormal_png, res.CloseSelected_png, ''
+    button.setTitleText 'Alface'
+    button.setTitleFontSize 24
+    button.setAnchorPoint cc.p 1, 0.5
+    button.setPosition cc.p @size.width/2, @size.height/2
 
-    @label = new cc.LabelTTF('I did it.', 'Arial', 44)
-
-    @label.x = size.width / 2
-    @label.y = size.height / 2 + 50
-
-    @addChild @label
-
-    true
+    @addChild button
+    @addChild @menu
 
 class @Landing extends Scene
   onEnter: ->
