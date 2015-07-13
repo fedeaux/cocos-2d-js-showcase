@@ -9,11 +9,11 @@ gruntFunction = (grunt) ->
           join: true
 
         files:
-          "src/app.js": ["coffee/**/*.coffee"]
+          "src/app.js": ["coffee/core/**/*.coffee", "coffee/**/*.coffee"]
 
     watch:
       coffee:
-        files: ["coffee/*.coffee"]
+        files: ["coffee/**/*.coffee"]
         tasks: ["coffee"]
 
   grunt.initConfig gruntConfig

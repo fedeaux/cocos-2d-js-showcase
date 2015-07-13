@@ -4,23 +4,19 @@ class @LandingLayer extends Layer
 
     size = cc.winSize
 
-    @label = new cc.LabelTTF('This d be awesome :3', 'Arial', 44)
-    @label2 = new cc.LabelTTF('Can I have it? ^^', 'Arial', 44)
+    @label = new cc.LabelTTF('I did it.', 'Arial', 44)
 
     @label.x = size.width / 2
-    @label.y = size.height / 2
-
-    @label2.x = size.width / 2
-    @label2.y = size.height / 2 - 50
+    @label.y = size.height / 2 + 50
 
     @addChild @label
-    @addChild @label2
 
     true
 
-class @Landing extends cc.Scene
+class @Landing extends Scene
   onEnter: ->
-    @_super()
+    super
+
     layer = new LandingLayer
     @addChild layer
     return

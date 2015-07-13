@@ -3,15 +3,6 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  this.HelloWorldScene = cc.Scene.extend({
-    onEnter: function() {
-      var layer;
-      this._super();
-      layer = new LandingLayer;
-      this.addChild(layer);
-    }
-  });
-
   this.Layer = (function(superClass) {
     extend(Layer, superClass);
 
@@ -23,6 +14,17 @@
 
   })(cc.Layer);
 
+  this.Scene = (function(superClass) {
+    extend(Scene, superClass);
+
+    function Scene() {
+      this.ctor();
+    }
+
+    return Scene;
+
+  })(cc.Scene);
+
   this.LandingLayer = (function(superClass) {
     extend(LandingLayer, superClass);
 
@@ -30,14 +32,10 @@
       var size;
       LandingLayer.__super__.constructor.apply(this, arguments);
       size = cc.winSize;
-      this.label = new cc.LabelTTF('This d be awesome :3', 'Arial', 44);
-      this.label2 = new cc.LabelTTF('Can I have it? ^^', 'Arial', 44);
+      this.label = new cc.LabelTTF('I did it.', 'Arial', 44);
       this.label.x = size.width / 2;
-      this.label.y = size.height / 2;
-      this.label2.x = size.width / 2;
-      this.label2.y = size.height / 2 - 50;
+      this.label.y = size.height / 2 + 50;
       this.addChild(this.label);
-      this.addChild(this.label2);
       true;
     }
 
@@ -54,14 +52,14 @@
 
     Landing.prototype.onEnter = function() {
       var layer;
-      this._super();
+      Landing.__super__.onEnter.apply(this, arguments);
       layer = new LandingLayer;
       this.addChild(layer);
     };
 
     return Landing;
 
-  })(cc.Scene);
+  })(Scene);
 
   this.LandingMenu = (function(superClass) {
     extend(LandingMenu, superClass);
