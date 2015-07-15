@@ -47,7 +47,7 @@
  *
  */
 
-cc.game.onStart = function(){
+cc.game.onStart = function() {
   if(!cc.sys.isNative && document.getElementById("cocosLoading")) //If referenced loading.js, please remove it
     document.body.removeChild(document.getElementById("cocosLoading"));
 
@@ -55,8 +55,14 @@ cc.game.onStart = function(){
   cc.view.enableRetina(false);
   // Adjust viewport meta
   cc.view.adjustViewPort(true);
+
   // Setup the resolution policy and design resolution size
-  cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.SHOW_ALL);
+  if(cc.sys.isNative) {
+    cs = cc.view.getFrameSize()
+    cc.view.setDesignResolutionSize(cs.width, cs.height, cc.ResolutionPolicy.NO_BORDER);
+  } else {
+    cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.NO_BORDER);
+  }
   // The game will be resized when browser size change
   cc.view.resizeWithBrowserSize(true);
   //load resources

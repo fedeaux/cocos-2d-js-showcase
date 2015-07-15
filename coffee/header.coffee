@@ -1,48 +1,61 @@
-class @Header extends Layer
+class @Header extends Layout
   constructor: ->
     super
+
     @size = cc.winSize
-    @setContentSize @size.width, 80
-    # @setAnchorPoint cc.p 0, 1
-    # @setPosition cc.p 0, @size.height - 80
-    #@addChild new cc.LayerGradient(cc.color(0,0,0,255), cc.color(120,0,120,255), cc.p(1, 2))
+    @height = @size.height / 10
 
-    @createBoundingBox()
-    @createMenuButton()
+    @setContentSize @size.width, @height
+    @setAnchorPoint cc.p 0, 1
+    @setPosition cc.p 0, @size.height
+    @setClippingEnabled true
 
-  createBoundingBox: ->
-    console.log @getContentSize()
+    @setBackGroundColorType ccui.Layout.BG_COLOR_GRADIENT
+    @setBackGroundColor cc.color(90, 90, 90), cc.color(180, 180, 180)
 
-    @boundingBox = new ccui.HBox()
-    @boundingBox.setAnchorPoint cc.p 0, 1
-    @boundingBox.setPosition cc.p 0, @size.height
-    @boundingBox.setContentSize cc.size @getContentSize().width, @getContentSize().height
-    @boundingBox.setClippingEnabled true
-    @boundingBox.setBackGroundImage res.HelloWorld_png
+    G.header = @
 
-    @addChild @boundingBox
+    @sideMenuHeaderButton = new SideMenuHeaderButton
+    @addChild @sideMenuHeaderButton
 
-    # @background = new cc.Texture2D "res/header-bg.png"
-    # console.log cc.Sprite.createWithTexture(@background, cc.rect(0, 0, 640, 80)).getTexture().setTexParameters()
+    @addChild new AppTitle
 
-    # Size visibleSize = Director::getInstance()->getVisibleSize();
-    # Vec2 origin = Director::getInstance()->getVisibleOrigin();
+class @AppTitle extends LabelTTF
+  constructor: ->
+    @title = 'Showcase'
+    @prefix = 'Cocos2d JS: '
 
-    # // Set an image to a texture, set the param "repeat"
-    # Texture2D *bgTexture = Director::getInstance()->getTextureCache()->addImage("bg.jpg");
-    # const Texture2D::TexParams tp = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT};
+    @container = G.header
+    @containerSize = @container.getContentSize()
 
-    # // use the texture as Sprite
-    # Sprite *background = Sprite::createWithTexture(bgTexture, Rect(0, 0, visibleSize.width, visibleSize.height));
-    # background->getTexture()->setTexParameters(&tp);
-    # background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-    # this->addChild(background, 1);
+    super "#{@prefix}#{@title}", 'Helvetica', @containerSize.height / 3
 
+    @setAnchorPoint 0, 0
+    @margin = @containerSize.height / 10
 
-  createMenuButton: ->
-    @menuButton = new cc.Sprite "res/icons/list.png"
-    @menuButton.setAnchorPoint cc.p 0.5, 0.5
+    @setPosition @margin, @margin
 
-    margin = ( @boundingBox.getContentSize().height - @menuButton.getContentSize().height ) / 2
-    @menuButton.setPosition cc.p(@boundingBox.getContentSize().width - margin, -margin)
-    @addChild @menuButton
+class @SideMenuHeaderButton extends Button
+  constructor: ->
+    super "res/icons/list.png"
+
+    @container = G.header
+    @containerSize = @container.getContentSize()
+
+    @setAnchorPoint 1, 0.5
+    @margin = @containerSize.height / 10
+
+    @dimensions = @containerSize.height - 2 * @margin
+    @setPosition (@containerSize.width - @margin), @containerSize.height / 2
+
+    @setLayoutComponentEnabled true
+    @ignoreContentAdaptWithSize false
+    @setContentSize cc.size @dimensions, @dimensions
+
+    # @setSize @dimensions, @dimensions
+
+    @addTouchEventListener @click, @
+
+  click: (target, type) =>
+    if type == 2
+      G.side_menu.toggle()

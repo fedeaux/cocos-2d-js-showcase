@@ -1,26 +1,56 @@
-class @LandingMenu extends ListView
-  constructor: ->
+class @SideMenu extends ListView
+  constructor: (@container) ->
     super
 
-    @size = cc.winSize
+    @size = @container.getBoundingBox()
     @buttons = []
 
     @setDirection ccui.ScrollView.DIR_VERTICAL
     @setTouchEnabled true
     @setBounceEnabled true
-    @setAnchorPoint cc.p 0.5, 0.5
-    @setPosition cc.p @size.width/2, @size.height/2
+    @setClippingEnabled true
+    @setBackGroundColorType ccui.Layout.BG_COLOR_SOLID
+    @setBackGroundColor cc.color(0, 0, 0)
+    @setAnchorPoint cc.p 0, 1
     @setGravity ccui.ListView.GRAVITY_CENTER_HORIZONTAL
-    @setContentSize cc.size(@size.width, 100)
+    @setContentSize cc.size(@size.width, @size.height)
 
     for item in ['Animations', 'UI', 'Scene Transitions', 'Network']
       @addItem item
 
     @setItemsMargin @evalMargin()
+    @setContentSize cc.size(@evalInnerWidth(), @size.height)
 
-    @setContentSize cc.size(@size.width, @evalInnerHeight())
+    @shownPosition = cc.p 0, @size.height
+    @hiddenPosition = cc.p (-@evalInnerWidth()), @size.height
+    @setPosition @hiddenPosition
 
-    @refreshView()
+    @showAnimation = new cc.MoveTo 2, @shownPosition
+    @hideAnimation = new cc.MoveTo 2, @hiddenPosition
+
+    G.side_menu = @
+
+    @hide()
+
+  show: ->
+    console.log 'show'
+    @visible = true
+    @runAction @showAnimation
+
+  hide: ->
+    console.log 'hide'
+    @visible = false
+    @runAction @hideAnimation
+
+  toggle: ->
+    if @visible then @hide() else @show()
+
+  evalInnerWidth: ->
+    unless @_innerWidth?
+      widths = (button.getBoundingBox().width for button in @buttons)
+      @_innerWidth = (Math.max.apply(0, widths) + @evalMargin() * 8)
+
+    @_innerWidth
 
   evalMargin: ->
     heights = (button.getBoundingBox().height for button in @buttons)
