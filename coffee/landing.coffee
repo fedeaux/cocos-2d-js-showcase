@@ -4,21 +4,20 @@ class @LandingLayer extends Layer
     @size = cc.winSize
     @menu = new LandingMenu
 
-    button = new ccui.Button
-    button.setTouchEnabled true
-    button.loadTextures res.CloseNormal_png, res.CloseSelected_png, ''
-    button.setTitleText 'Alface'
-    button.setTitleFontSize 24
-    button.setAnchorPoint cc.p 1, 0.5
-    button.setPosition cc.p @size.width/2, @size.height/2
+    # backgroundLayer = new cc.LayerGradient(cc.color(0,0,0,255), cc.color(0x46,0x82,0xB4,255))#new cc.LayerColor(new cc.Color(40,40,40,255), @size.width, @size.height)
+    # @addChild(backgroundLayer)
 
-    @addChild button
     @addChild @menu
 
-class @Landing extends Scene
+class @APP extends Scene
   onEnter: ->
     super
 
+    header = new Header
+    @addChild header
+
     layer = new LandingLayer
     @addChild layer
-    return
+
+    # positions = new Positions
+    # @addChild positions
