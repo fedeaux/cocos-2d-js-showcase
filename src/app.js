@@ -231,15 +231,31 @@
       this.setContentSize(cc.size(this.size.width, this.size.height));
       this.setAnchorPoint(0, 0);
       this.setPosition(0, 0);
-      this.setOpacity(0);
+      this.to(0);
+      this.maxOpacity = 210;
     }
 
     Overlay.prototype.show = function() {
-      return this.runAction(new cc.FadeTo(Style.animation.duration, 210));
+      this.currentOpacity = this.maxOpacity;
+      return this.runAction(new cc.FadeTo(Style.animation.duration, this.maxOpacity));
     };
 
     Overlay.prototype.hide = function() {
-      return this.runAction(new cc.FadeTo(Style.animation.duration, 0));
+      this.currentOpacity = 0;
+      return this.runAction(new cc.FadeTo(Style.animation.duration, this.currentOpacity));
+    };
+
+    Overlay.prototype.to = function(val) {
+      this.currentOpacity = intervalPercentage(0, this.maxOpacity, val);
+      return this.setOpacity(this.currentOpacity);
+    };
+
+    Overlay.prototype.resolve = function() {
+      if (this.currentOpacity < this.maxOpacity / 2) {
+        return this.hide();
+      } else {
+        return this.show();
+      }
     };
 
     return Overlay;
@@ -272,6 +288,7 @@
 
     function SideMenu(container) {
       this.container = container;
+      this.to = bind(this.to, this);
       SideMenu.__super__.constructor.apply(this, arguments);
       this.size = this.container.getBoundingBox();
       this.buttons = [];
@@ -289,7 +306,7 @@
       this.setClippingEnabled(true);
       this.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
       this.setBackGroundColor(cc.color(0, 0, 0));
-      this.setAnchorPoint(0, 1);
+      this.setAnchorPoint(0, 0);
       this.setGravity(ccui.ListView.GRAVITY_CENTER_HORIZONTAL);
       ref = ['Animations', 'UI', 'Scene Transitions', 'Network'];
       for (i = 0, len = ref.length; i < len; i++) {
@@ -298,9 +315,8 @@
       }
       this.setItemsMargin(this.evalMargin());
       this.setContentSize(this.evalInnerWidth(), this.size.height);
-      this.shownPosition = cc.p(0, this.size.height);
-      this.hiddenPosition = cc.p(-this.evalInnerWidth(), this.size.height);
-      console.log(this._innerWidth);
+      this.shownPosition = cc.p(0, 0);
+      this.hiddenPosition = cc.p(-this.evalInnerWidth(), 0);
       this.setPosition(this.hiddenPosition);
       this.animationSpeed = this.evalInnerWidth() / Style.animation.duration;
       return this.shown = false;
@@ -308,7 +324,57 @@
 
     SideMenu.prototype.createOverlay = function() {
       this.overlay = new Overlay(this.container);
-      return this.container.addChild(this.overlay);
+      this.container.addChild(this.overlay);
+      this.sensibleArea = cc.rect(0, 0, this.size.width * 0.05, this.size.height);
+      return cc.eventManager.addListener({
+        event: cc.EventListener.TOUCH_ONE_BY_ONE,
+        onTouchBegan: (function(_this) {
+          return function(touch, event) {
+            _this.isDragging = cc.rectContainsPoint(_this.sensibleArea, event.getCurrentTarget().convertToNodeSpace(touch.getLocation())) || _this.shown;
+            _this.dragStartedAt = touch.getLocationX();
+            return true;
+          };
+        })(this),
+        onTouchMoved: (function(_this) {
+          return function(touch, event) {
+            var draggingInTermsOfPercentage;
+            if (_this.isDragging) {
+              if (_this.shown) {
+                draggingInTermsOfPercentage = orbtatingPercentage(1.6 * (Math.min(touch.getLocationX() - _this.dragStartedAt, 0)) / _this.size.width);
+              } else {
+                draggingInTermsOfPercentage = orbtatingPercentage(1.6 * (Math.max(touch.getLocationX() - _this.dragStartedAt, _this.dragStartedAt)) / _this.size.width);
+              }
+              _this.to(draggingInTermsOfPercentage);
+            }
+          };
+        })(this),
+        onTouchEnded: (function(_this) {
+          return function(touch, event) {
+            _this.isDragging = false;
+            _this.resolve();
+          };
+        })(this),
+        onTouchCancelled: (function(_this) {
+          return function(touch, event) {
+            _this.isDragging = false;
+          };
+        })(this)
+      }, this.overlay);
+    };
+
+    SideMenu.prototype.to = function(val) {
+      var new_x;
+      this.overlay.to(val);
+      new_x = intervalPercentage(this.hiddenPosition.x, this.shownPosition.x, val);
+      return this.setPosition(new_x, this.shownPosition.y);
+    };
+
+    SideMenu.prototype.resolve = function() {
+      if (this.getPosition().x < (this.hiddenPosition.x - this.shownPosition.x) / 2) {
+        return this.hide();
+      } else {
+        return this.show();
+      }
     };
 
     SideMenu.prototype.show = function() {
@@ -409,6 +475,31 @@
     animation: {
       duration: 0.3
     }
+  };
+
+  this.constrain = function(val, min, max) {
+    if (min == null) {
+      min = 0;
+    }
+    if (max == null) {
+      max = 1;
+    }
+    return Math.min(max, Math.max(val, min));
+  };
+
+  this.orbtatingPercentage = function(val) {
+    val = constrain(val, -1, 1);
+    if (val <= 0) {
+      return 1 + val;
+    }
+    return val;
+  };
+
+  this.intervalPercentage = function(v1, v2, percentage) {
+    var max, min;
+    min = Math.min(v1, v2);
+    max = Math.max(v1, v2);
+    return Math.abs(max - min) * percentage + min;
   };
 
 }).call(this);

@@ -19,7 +19,7 @@ class @SideMenu extends ListView
     @setClippingEnabled true
     @setBackGroundColorType ccui.Layout.BG_COLOR_SOLID
     @setBackGroundColor cc.color(0, 0, 0)
-    @setAnchorPoint 0, 1
+    @setAnchorPoint 0, 0
     @setGravity ccui.ListView.GRAVITY_CENTER_HORIZONTAL
 
     for item in ['Animations', 'UI', 'Scene Transitions', 'Network']
@@ -28,10 +28,9 @@ class @SideMenu extends ListView
     @setItemsMargin @evalMargin()
     @setContentSize @evalInnerWidth(), @size.height
 
-    @shownPosition = cc.p(0, @size.height)
-    @hiddenPosition = cc.p((-@evalInnerWidth()), @size.height)
+    @shownPosition = cc.p(0, 0)
+    @hiddenPosition = cc.p((-@evalInnerWidth()), 0)
 
-    console.log @_innerWidth
     @setPosition @hiddenPosition
 
     # px / sec
@@ -42,6 +41,50 @@ class @SideMenu extends ListView
   createOverlay: ->
     @overlay = new Overlay @container
     @container.addChild @overlay
+    @sensibleArea = cc.rect 0, 0, @size.width * 0.05, @size.height
+
+    cc.eventManager.addListener {
+      event: cc.EventListener.TOUCH_ONE_BY_ONE
+
+      onTouchBegan: (touch, event) =>
+        @isDragging = cc.rectContainsPoint(@sensibleArea, event.getCurrentTarget().convertToNodeSpace(touch.getLocation())) or @shown
+        @dragStartedAt = touch.getLocationX()
+        true
+
+      onTouchMoved: (touch, event) =>
+        if @isDragging
+          if @shown
+            draggingInTermsOfPercentage = orbtatingPercentage 1.6 * (Math.min(touch.getLocationX() - @dragStartedAt, 0)) / @size.width
+
+          else
+            draggingInTermsOfPercentage = orbtatingPercentage 1.6 * (Math.max(touch.getLocationX() - @dragStartedAt, @dragStartedAt)) / @size.width
+
+          @to draggingInTermsOfPercentage
+
+        return
+
+      onTouchEnded: (touch, event) =>
+        @isDragging = false
+        @resolve()
+        return
+
+      onTouchCancelled: (touch, event) =>
+        @isDragging = false
+        return
+
+    }, @overlay
+
+  to: (val) =>
+    @overlay.to val
+
+    new_x = intervalPercentage @hiddenPosition.x, @shownPosition.x, val
+    @setPosition new_x, @shownPosition.y
+
+  resolve: ->
+    if @getPosition().x < (@hiddenPosition.x - @shownPosition.x) / 2
+      @hide()
+    else
+      @show()
 
   show: ->
     @shown = true
