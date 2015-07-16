@@ -231,7 +231,6 @@
       this.setContentSize(cc.size(this.size.width, this.size.height));
       this.setAnchorPoint(0, 0);
       this.setPosition(0, 0);
-      this.to(0);
       this.maxOpacity = 210;
     }
 
@@ -325,7 +324,7 @@
     SideMenu.prototype.createOverlay = function() {
       this.overlay = new Overlay(this.container);
       this.container.addChild(this.overlay);
-      this.sensibleArea = cc.rect(0, 0, this.size.width * 0.05, this.size.height);
+      this.sensibleArea = cc.rect(0, 0, this.size.width * 0.1, this.size.height);
       return cc.eventManager.addListener({
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
         onTouchBegan: (function(_this) {

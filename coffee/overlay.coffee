@@ -7,7 +7,6 @@ class @Overlay extends Layout
     @setContentSize cc.size @size.width, @size.height
     @setAnchorPoint 0, 0
     @setPosition 0, 0
-    @to 0
 
     @maxOpacity = 210
 

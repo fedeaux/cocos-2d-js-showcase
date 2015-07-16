@@ -41,7 +41,7 @@ class @SideMenu extends ListView
   createOverlay: ->
     @overlay = new Overlay @container
     @container.addChild @overlay
-    @sensibleArea = cc.rect 0, 0, @size.width * 0.05, @size.height
+    @sensibleArea = cc.rect 0, 0, @size.width * 0.1, @size.height
 
     cc.eventManager.addListener {
       event: cc.EventListener.TOUCH_ONE_BY_ONE
