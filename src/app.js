@@ -265,27 +265,30 @@
       this.setContentSize(cc.size(this.evalInnerWidth(), this.size.height));
       this.shownPosition = cc.p(0, this.size.height);
       this.hiddenPosition = cc.p(-this.evalInnerWidth(), this.size.height);
-      this.setPosition(this.hiddenPosition);
-      this.showAnimation = new cc.MoveTo(2, this.shownPosition);
-      this.hideAnimation = new cc.MoveTo(2, this.hiddenPosition);
+      this.animationDuration = 0.3;
+      this.animationSpeed = this.evalInnerWidth() / this.animationDuration;
+      this.shown = false;
       G.side_menu = this;
-      this.hide();
+      this.setPosition(this.hiddenPosition);
+      this.refreshView();
     }
 
     SideMenu.prototype.show = function() {
-      console.log('show');
-      this.visible = true;
-      return this.runAction(this.showAnimation);
+      this.shown = true;
+      this.stopAllActions();
+      this.dx = this.shownPosition.x - this.getPosition().x;
+      return this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.shownPosition));
     };
 
     SideMenu.prototype.hide = function() {
-      console.log('hide');
-      this.visible = false;
-      return this.runAction(this.hideAnimation);
+      this.shown = false;
+      this.stopAllActions();
+      this.dx = this.getPosition().x - this.hiddenPosition.x;
+      return this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.hiddenPosition));
     };
 
     SideMenu.prototype.toggle = function() {
-      if (this.visible) {
+      if (this.shown) {
         return this.hide();
       } else {
         return this.show();
@@ -343,8 +346,6 @@
           return results;
         }).call(this);
         this._innerHeight = (heights[0] + this.evalMargin() * 2) * this.buttons.length;
-        console.log(heights[0], this.evalMargin());
-        console.log(this._innerHeight);
       }
       return this._innerHeight;
     };

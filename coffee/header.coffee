@@ -34,6 +34,7 @@ class @AppTitle extends LabelTTF
     @margin = @containerSize.height / 10
 
     @setPosition @margin, @margin
+    # @enableShadow cc.color(0x11, 0x11, 0x11), cc.size(0, 0), 3
 
 class @SideMenuHeaderButton extends Button
   constructor: ->

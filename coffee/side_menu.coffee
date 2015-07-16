@@ -21,29 +21,37 @@ class @SideMenu extends ListView
     @setItemsMargin @evalMargin()
     @setContentSize cc.size(@evalInnerWidth(), @size.height)
 
-    @shownPosition = cc.p 0, @size.height
-    @hiddenPosition = cc.p (-@evalInnerWidth()), @size.height
-    @setPosition @hiddenPosition
+    @shownPosition = cc.p(0, @size.height)
+    @hiddenPosition = cc.p((-@evalInnerWidth()), @size.height)
 
-    @showAnimation = new cc.MoveTo 2, @shownPosition
-    @hideAnimation = new cc.MoveTo 2, @hiddenPosition
+    @animationDuration = 0.3
+
+    # px / sec
+    @animationSpeed = @evalInnerWidth() / @animationDuration
+
+    @shown = false
 
     G.side_menu = @
 
-    @hide()
+    @setPosition @hiddenPosition
+    @refreshView();
 
   show: ->
-    console.log 'show'
-    @visible = true
-    @runAction @showAnimation
+    @shown = true
+    @stopAllActions()
+
+    @dx = @shownPosition.x - @getPosition().x
+    @runAction new cc.MoveTo (@dx / @animationSpeed), @shownPosition
 
   hide: ->
-    console.log 'hide'
-    @visible = false
-    @runAction @hideAnimation
+    @shown = false
+    @stopAllActions()
+
+    @dx = @getPosition().x - @hiddenPosition.x
+    @runAction new cc.MoveTo (@dx / @animationSpeed), @hiddenPosition
 
   toggle: ->
-    if @visible then @hide() else @show()
+    if @shown then @hide() else @show()
 
   evalInnerWidth: ->
     unless @_innerWidth?
@@ -63,8 +71,6 @@ class @SideMenu extends ListView
     unless @_innerHeight?
       heights = (button.getBoundingBox().height for button in @buttons)
       @_innerHeight = (heights[0] + @evalMargin() * 2) * @buttons.length
-      console.log heights[0], @evalMargin()
-      console.log @_innerHeight
 
     @_innerHeight
 
