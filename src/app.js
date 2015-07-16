@@ -105,6 +105,8 @@
       this.setBackGroundColorType(ccui.Layout.BG_COLOR_GRADIENT);
       this.setBackGroundColor(cc.color(240, 240, 250), cc.color(120, 120, 125));
       this.menu = new SideMenu(this);
+      this.menu.hide();
+      this.menu.hide();
       this.addChild(this.menu);
     }
 
@@ -217,6 +219,33 @@
 
   })(Scene);
 
+  this.Overlay = (function(superClass) {
+    extend(Overlay, superClass);
+
+    function Overlay(container) {
+      this.container = container;
+      Overlay.__super__.constructor.apply(this, arguments);
+      this.size = this.container.getBoundingBox();
+      this.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+      this.setBackGroundColor(cc.color(0, 0, 0));
+      this.setContentSize(cc.size(this.size.width, this.size.height));
+      this.setAnchorPoint(0, 0);
+      this.setPosition(0, 0);
+      this.setOpacity(0);
+    }
+
+    Overlay.prototype.show = function() {
+      return this.runAction(new cc.FadeTo(Style.animation.duration, 210));
+    };
+
+    Overlay.prototype.hide = function() {
+      return this.runAction(new cc.FadeTo(Style.animation.duration, 0));
+    };
+
+    return Overlay;
+
+  })(Layout);
+
   this.Positions = (function(superClass) {
     extend(Positions, superClass);
 
@@ -242,49 +271,60 @@
     extend(SideMenu, superClass);
 
     function SideMenu(container) {
-      var i, item, len, ref;
       this.container = container;
       SideMenu.__super__.constructor.apply(this, arguments);
       this.size = this.container.getBoundingBox();
       this.buttons = [];
+      this.initStyle();
+      this.createOverlay();
+      G.side_menu = this;
+      this.setPosition(this.hiddenPosition);
+    }
+
+    SideMenu.prototype.initStyle = function() {
+      var i, item, len, ref;
       this.setDirection(ccui.ScrollView.DIR_VERTICAL);
       this.setTouchEnabled(true);
       this.setBounceEnabled(true);
       this.setClippingEnabled(true);
       this.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
       this.setBackGroundColor(cc.color(0, 0, 0));
-      this.setAnchorPoint(cc.p(0, 1));
+      this.setAnchorPoint(0, 1);
       this.setGravity(ccui.ListView.GRAVITY_CENTER_HORIZONTAL);
-      this.setContentSize(cc.size(this.size.width, this.size.height));
       ref = ['Animations', 'UI', 'Scene Transitions', 'Network'];
       for (i = 0, len = ref.length; i < len; i++) {
         item = ref[i];
         this.addItem(item);
       }
       this.setItemsMargin(this.evalMargin());
-      this.setContentSize(cc.size(this.evalInnerWidth(), this.size.height));
+      this.setContentSize(this.evalInnerWidth(), this.size.height);
       this.shownPosition = cc.p(0, this.size.height);
       this.hiddenPosition = cc.p(-this.evalInnerWidth(), this.size.height);
-      this.animationDuration = 0.3;
-      this.animationSpeed = this.evalInnerWidth() / this.animationDuration;
-      this.shown = false;
-      G.side_menu = this;
+      console.log(this._innerWidth);
       this.setPosition(this.hiddenPosition);
-      this.refreshView();
-    }
+      this.animationSpeed = this.evalInnerWidth() / Style.animation.duration;
+      return this.shown = false;
+    };
+
+    SideMenu.prototype.createOverlay = function() {
+      this.overlay = new Overlay(this.container);
+      return this.container.addChild(this.overlay);
+    };
 
     SideMenu.prototype.show = function() {
       this.shown = true;
       this.stopAllActions();
       this.dx = this.shownPosition.x - this.getPosition().x;
-      return this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.shownPosition));
+      this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.shownPosition));
+      return this.overlay.show();
     };
 
     SideMenu.prototype.hide = function() {
       this.shown = false;
       this.stopAllActions();
       this.dx = this.getPosition().x - this.hiddenPosition.x;
-      return this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.hiddenPosition));
+      this.runAction(new cc.MoveTo(this.dx / this.animationSpeed, this.hiddenPosition));
+      return this.overlay.hide();
     };
 
     SideMenu.prototype.toggle = function() {
@@ -364,5 +404,11 @@
     return SideMenu;
 
   })(ListView);
+
+  this.Style = {
+    animation: {
+      duration: 0.3
+    }
+  };
 
 }).call(this);

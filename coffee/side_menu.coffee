@@ -5,36 +5,43 @@ class @SideMenu extends ListView
     @size = @container.getBoundingBox()
     @buttons = []
 
+    @initStyle()
+    @createOverlay()
+
+    G.side_menu = @
+
+    @setPosition @hiddenPosition
+
+  initStyle: ->
     @setDirection ccui.ScrollView.DIR_VERTICAL
     @setTouchEnabled true
     @setBounceEnabled true
     @setClippingEnabled true
     @setBackGroundColorType ccui.Layout.BG_COLOR_SOLID
     @setBackGroundColor cc.color(0, 0, 0)
-    @setAnchorPoint cc.p 0, 1
+    @setAnchorPoint 0, 1
     @setGravity ccui.ListView.GRAVITY_CENTER_HORIZONTAL
-    @setContentSize cc.size(@size.width, @size.height)
 
     for item in ['Animations', 'UI', 'Scene Transitions', 'Network']
       @addItem item
 
     @setItemsMargin @evalMargin()
-    @setContentSize cc.size(@evalInnerWidth(), @size.height)
+    @setContentSize @evalInnerWidth(), @size.height
 
     @shownPosition = cc.p(0, @size.height)
     @hiddenPosition = cc.p((-@evalInnerWidth()), @size.height)
 
-    @animationDuration = 0.3
+    console.log @_innerWidth
+    @setPosition @hiddenPosition
 
     # px / sec
-    @animationSpeed = @evalInnerWidth() / @animationDuration
+    @animationSpeed = @evalInnerWidth() / Style.animation.duration
 
     @shown = false
 
-    G.side_menu = @
-
-    @setPosition @hiddenPosition
-    @refreshView();
+  createOverlay: ->
+    @overlay = new Overlay @container
+    @container.addChild @overlay
 
   show: ->
     @shown = true
@@ -42,6 +49,7 @@ class @SideMenu extends ListView
 
     @dx = @shownPosition.x - @getPosition().x
     @runAction new cc.MoveTo (@dx / @animationSpeed), @shownPosition
+    @overlay.show()
 
   hide: ->
     @shown = false
@@ -49,6 +57,7 @@ class @SideMenu extends ListView
 
     @dx = @getPosition().x - @hiddenPosition.x
     @runAction new cc.MoveTo (@dx / @animationSpeed), @hiddenPosition
+    @overlay.hide()
 
   toggle: ->
     if @shown then @hide() else @show()

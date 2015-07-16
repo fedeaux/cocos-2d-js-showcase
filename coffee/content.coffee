@@ -14,4 +14,6 @@ class @Content extends HBox
     @setBackGroundColor cc.color(240, 240, 250), cc.color(120, 120, 125)
 
     @menu = new SideMenu @
+    @menu.hide()
+    @menu.hide()
     @addChild @menu
