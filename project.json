@@ -1,17 +1,18 @@
 {
-    "project_type": "javascript",
+  "project_type": "javascript",
 
-    "debugMode" : 1,
-    "showFPS" : true,
-    "frameRate" : 60,
-    "id" : "gameCanvas",
-    "renderMode" : 0,
-    "engineDir":"frameworks/cocos2d-html5",
+  "debugMode" : 1,
+  "showFPS" : true,
+  "frameRate" : 60,
+  "id" : "gameCanvas",
+  "renderMode" : 0,
+  "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d", "extensions"],
+  "modules" : ["cocos2d", "extensions"],
 
-    "jsList" : [
-        "src/resource.js",
-        "src/app.js"
-    ]
+  "jsList" : [
+    "src/resource.js",
+    "src/app.js",
+    "bower_components/localStorageDB/localstoragedb.min.js"
+  ]
 }

@@ -91,6 +91,21 @@
 
   })(cc.Menu);
 
+  this.Routes = (function() {
+    function Routes() {
+      this.definitions = {
+        'animation/:id': function(id) {
+          return Controllers.Animation.show(id);
+        }
+      };
+    }
+
+    return Routes;
+
+  })();
+
+  window.routes = new this.Routes;
+
   this.Content = (function(superClass) {
     extend(Content, superClass);
 
@@ -113,6 +128,13 @@
     return Content;
 
   })(HBox);
+
+  this.ApplicationController = (function() {
+    function ApplicationController() {}
+
+    return ApplicationController;
+
+  })();
 
   this.Header = (function(superClass) {
     extend(Header, superClass);
