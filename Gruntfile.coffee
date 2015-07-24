@@ -16,10 +16,20 @@ gruntFunction = (grunt) ->
         files: ["coffee/**/*.coffee"]
         tasks: ["coffee"]
 
+    concat:
+      dist:
+        src: [
+          'bower_components/underscore/underscore-min.js'
+          'bower_components/underscore/stroke-of-genius.js'
+        ]
+
+        dest: 'src/vendor.js',
+
   grunt.initConfig gruntConfig
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-concat'
 
   grunt.registerTask 'default', ['coffee']
 
