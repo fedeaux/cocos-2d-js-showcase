@@ -25,6 +25,9 @@ class @AppTitle extends LabelTTF
     @title = 'Showcase'
     @prefix = 'Cocos2d JS: '
 
+    localStorage.setItem 'goiabada', 'com limão'
+    @title = localStorage.getItem 'goiabada'
+
     @container = G.header
     @containerSize = @container.getContentSize()
 

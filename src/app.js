@@ -3,6 +3,32 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
+  if (typeof localStorage === "undefined" || localStorage === null) {
+    this.localStorage = cc.sys.localStorage;
+  }
+
+  this.Routes = (function() {
+    function Routes() {
+      this.definitions = {
+        'animation/:id': function(id) {
+          return Controllers.Animation.show(id);
+        }
+      };
+    }
+
+    return Routes;
+
+  })();
+
+  window.routes = new this.Routes;
+
+  this.ApplicationController = (function() {
+    function ApplicationController() {}
+
+    return ApplicationController;
+
+  })();
+
   this.HBox = (function(superClass) {
     extend(HBox, superClass);
 
@@ -91,21 +117,6 @@
 
   })(cc.Menu);
 
-  this.Routes = (function() {
-    function Routes() {
-      this.definitions = {
-        'animation/:id': function(id) {
-          return Controllers.Animation.show(id);
-        }
-      };
-    }
-
-    return Routes;
-
-  })();
-
-  window.routes = new this.Routes;
-
   this.Content = (function(superClass) {
     extend(Content, superClass);
 
@@ -128,13 +139,6 @@
     return Content;
 
   })(HBox);
-
-  this.ApplicationController = (function() {
-    function ApplicationController() {}
-
-    return ApplicationController;
-
-  })();
 
   this.Header = (function(superClass) {
     extend(Header, superClass);
@@ -165,6 +169,8 @@
     function AppTitle() {
       this.title = 'Showcase';
       this.prefix = 'Cocos2d JS: ';
+      localStorage.setItem('goiabada', 'com limão');
+      this.title = localStorage.getItem('goiabada');
       this.container = G.header;
       this.containerSize = this.container.getContentSize();
       AppTitle.__super__.constructor.call(this, "" + this.prefix + this.title, 'Helvetica', this.containerSize.height / 3);

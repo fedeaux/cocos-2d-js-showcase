@@ -12,7 +12,6 @@
 
   "jsList" : [
     "src/resource.js",
-    "src/app.js",
-    "bower_components/localStorageDB/localstoragedb.min.js"
+    "src/app.js"
   ]
 }

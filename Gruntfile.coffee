@@ -9,7 +9,7 @@ gruntFunction = (grunt) ->
           join: true
 
         files:
-          "src/app.js": ["coffee/core/**/*.coffee", "coffee/**/*.coffee"]
+          "src/app.js": ["coffee/config/**/*.coffee", "coffee/core/**/*.coffee", "coffee/**/*.coffee"]
 
     watch:
       coffee:
